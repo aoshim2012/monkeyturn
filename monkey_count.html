@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>モンキーターンV専用カウンター ver1.0</title>
+  <style>
+    body {
+      font-family: 'Helvetica Neue', sans-serif;
+      text-align: center;
+      background: #f0f2f5;
+      padding: 20px;
+      margin: 0;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 30px;
+    }
+
+    .counter {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 350px;
+    }
+
+    .counter label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    button {
+      font-size: 16px;
+      margin: 5px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      background: #007BFF;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    .reset {
+      background: #e74c3c;
+    }
+
+    .reset:hover {
+      background: #c0392b;
+    }
+
+    .count, input[type="number"] {
+      font-size: 28px;
+      margin: 10px;
+      color: #007BFF;
+      display: block;
+    }
+
+    input[type="number"] {
+      width: 120px;
+      padding: 8px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      margin: 10px auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>モンキーターンV専用カウンター</h1>
+
+  <div class="counter">
+    <label>５枚役</label>
+    <button onclick="increment('cherry')">＋</button>
+    <button onclick="decrement('cherry')">－</button>
+    <div class="count" id="cherry-count">0</div>
+  </div>
+
+  <div class="counter">
+    <label>スイカ</label>
+    <button onclick="increment('suika')">＋</button>
+    <div class="count" id="suika-count">0</div>
+  </div>
+
+  <div class="counter">
+    <label for="game-input">ゲーム数</label>
+    <input type="number" id="game-input" min="0" onchange="setGameCount(this.value)">
+  </div>
+
+  <button class="reset" onclick="resetCounts()">リセット</button>
+
+  <script>
+    const counts = {
+      cherry: parseInt(localStorage.getItem('cherry') || '0'),
+      suika: parseInt(localStorage.getItem('suika') || '0'),
+      game: parseInt(localStorage.getItem('game') || '0'),
+    };
+
+    function updateDisplay() {
+      document.getElementById('cherry-count').textContent = counts.cherry;
+      document.getElementById('suika-count').textContent = counts.suika;
+      document.getElementById('game-input').value = counts.game;
+    }
+
+    function increment(key) {
+      counts[key]++;
+      localStorage.setItem(key, counts[key]);
+      updateDisplay();
+    }
+
+    function decrement(key) {
+      if (counts[key] > 0) {
+        counts[key]--;
+        localStorage.setItem(key, counts[key]);
+        updateDisplay();
+      }
+    }
+
+    function setGameCount(value) {
+      const num = parseInt(value);
+      if (!isNaN(num) && num >= 0) {
+        counts.game = num;
+        localStorage.setItem('game', counts.game);
+        updateDisplay();
+      }
+    }
+
+    function resetCounts() {
+      if (confirm('本当にリセットしますか？')) {
+        counts.cherry = 0;
+        counts.suika = 0;
+        counts.game = 0;
+        localStorage.clear();
+        updateDisplay();
+      }
+    }
+
+    updateDisplay();
+  </script>
+</body>
+</html>
