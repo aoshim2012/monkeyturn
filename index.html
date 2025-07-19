@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>モンキーターンV専用カウンター ver1.0</title>
   <style>
     body {
@@ -24,13 +24,25 @@
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
       padding: 20px;
       margin: 20px auto;
-      max-width: 350px;
+      max-width: 400px;
     }
 
     .counter label {
       display: block;
-      margin-bottom: 10px;
+      margin-bottom: 6px;
       font-weight: bold;
+    }
+
+    .game-group {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .game-group > div {
+      flex: 1;
+      min-width: 100px;
     }
 
     button {
@@ -58,41 +70,97 @@
     }
 
     .count, input[type="number"] {
-      font-size: 28px;
-      margin: 10px;
+      font-size: 24px;
       color: #007BFF;
-      display: block;
+      text-align: center;
     }
 
     input[type="number"] {
-      width: 120px;
-      padding: 8px;
+      width: 80px;
+      padding: 6px;
       border-radius: 5px;
       border: 1px solid #ccc;
-      margin: 10px auto;
     }
+    <style>
+  /* 追加: プラスボタンを大きく */
+  .btn-plus {
+    font-size: 24px;
+    padding: 12px 24px;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 6px;
+  }
+
+  .btn-plus:hover {
+    background: #218838;
+  }
+
+  /* 追加: マイナスボタンを小さく */
+  .btn-minus {
+    font-size: 14px;
+    padding: 6px 12px;
+    background: #ffc107;
+    color: black;
+    border: none;
+    border-radius: 6px;
+  }
+
+  .btn-minus:hover {
+    background: #e0a800;
+  }
+  .rate-label {
+  margin-top: 8px;
+  font-size: 16px;
+  color: #555;
+}
+
+</style>
+
   </style>
 </head>
 <body>
   <h1>モンキーターンV専用カウンター</h1>
 
   <div class="counter">
-    <label>５枚役</label>
-    <button onclick="increment('cherry')">＋</button>
-    <button onclick="decrement('cherry')">－</button>
-    <div class="count" id="cherry-count">0</div>
+    <div class="game-group">
+      <div>
+        <label for="start-game">開始ゲーム数</label>
+        <input type="number" id="start-game" min="0" onchange="updatePersonalGame()">
+      </div>
+      <div>
+        <label for="total-game">総ゲーム数</label>
+        <input type="number" id="total-game" min="0" onchange="updatePersonalGame()">
+      </div>
+      <div>
+        <label>個人ゲーム数</label>
+        <div class="count" id="personal-game">0</div>
+      </div>
+    </div>
   </div>
 
-  <div class="counter">
-    <label>スイカ</label>
-    <button onclick="increment('suika')">＋</button>
-    <div class="count" id="suika-count">0</div>
+<!-- ５枚役 -->
+<div class="counter">
+  <label>５枚役</label>
+  <div class="count" id="cherry-count">0</div>
+  <div>
+    <button class="btn-plus" onclick="increment('cherry')">＋</button>
+    <button class="btn-minus" onclick="decrement('cherry')">－</button>
   </div>
+  <div class="rate-label">出現率: <span id="cherry-rate">-</span></div>
+</div>
 
-  <div class="counter">
-    <label for="game-input">ゲーム数</label>
-    <input type="number" id="game-input" min="0" onchange="setGameCount(this.value)">
+
+<!-- スイカ -->
+<div class="counter">
+  <label>スイカ</label>
+  <div class="count" id="suika-count">0</div>
+  <div>
+    <button class="btn-plus" onclick="increment('suika')">＋</button>
+    <button class="btn-minus" onclick="decrement('suika')">－</button>
   </div>
+</div>
+
 
   <button class="reset" onclick="resetCounts()">リセット</button>
 
@@ -100,13 +168,16 @@
     const counts = {
       cherry: parseInt(localStorage.getItem('cherry') || '0'),
       suika: parseInt(localStorage.getItem('suika') || '0'),
-      game: parseInt(localStorage.getItem('game') || '0'),
+      startGame: parseInt(localStorage.getItem('startGame') || '0'),
+      totalGame: parseInt(localStorage.getItem('totalGame') || '0'),
     };
 
     function updateDisplay() {
       document.getElementById('cherry-count').textContent = counts.cherry;
       document.getElementById('suika-count').textContent = counts.suika;
-      document.getElementById('game-input').value = counts.game;
+      document.getElementById('start-game').value = counts.startGame;
+      document.getElementById('total-game').value = counts.totalGame;
+      document.getElementById('personal-game').textContent = Math.max(counts.totalGame - counts.startGame, 0);
     }
 
     function increment(key) {
@@ -123,24 +194,39 @@
       }
     }
 
-    function setGameCount(value) {
-      const num = parseInt(value);
-      if (!isNaN(num) && num >= 0) {
-        counts.game = num;
-        localStorage.setItem('game', counts.game);
-        updateDisplay();
-      }
+    function updatePersonalGame() {
+      counts.startGame = parseInt(document.getElementById('start-game').value) || 0;
+      counts.totalGame = parseInt(document.getElementById('total-game').value) || 0;
+      localStorage.setItem('startGame', counts.startGame);
+      localStorage.setItem('totalGame', counts.totalGame);
+      updateDisplay();
     }
 
     function resetCounts() {
       if (confirm('本当にリセットしますか？')) {
         counts.cherry = 0;
         counts.suika = 0;
-        counts.game = 0;
+        counts.startGame = 0;
+        counts.totalGame = 0;
         localStorage.clear();
         updateDisplay();
       }
     }
+function updateDisplay() {
+  document.getElementById('cherry-count').textContent = counts.cherry;
+  document.getElementById('suika-count').textContent = counts.suika;
+  document.getElementById('start-game').value = counts.startGame;
+  document.getElementById('total-game').value = counts.totalGame;
+
+  const personalGame = Math.max(counts.totalGame - counts.startGame, 0);
+  document.getElementById('personal-game').textContent = personalGame;
+
+  // 出現率の計算と表示
+  const cherryRate = (counts.cherry > 0 && personalGame > 0)
+    ? (personalGame / counts.cherry).toFixed(2)
+    : '-';
+  document.getElementById('cherry-rate').textContent = cherryRate === '-' ? '-' : `1/${cherryRate}`;
+}
 
     updateDisplay();
   </script>
