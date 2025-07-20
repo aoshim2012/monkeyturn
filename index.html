@@ -51,14 +51,13 @@
       display: block;
     }
 
-    /* 以下は既存のカウンターのCSS（簡略版） */
     .counter {
       background: #fff;
       border-radius: 12px;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
       padding: 20px;
       margin: 20px auto;
-      max-width: 400px;
+      max-width: 500px;
       text-align: center;
     }
 
@@ -71,10 +70,11 @@
     .count {
       font-size: 24px;
       color: #007BFF;
+      margin-bottom: 5px;
     }
 
     button {
-      font-size: 16px;
+      font-size: 18px;
       margin: 5px;
       padding: 10px 20px;
       border: none;
@@ -87,6 +87,38 @@
     button:hover {
       background: #0056b3;
     }
+
+    .small-button {
+      font-size: 14px;
+      padding: 5px 10px;
+    }
+
+    input[type="number"] {
+      width: 100px;
+      padding: 6px;
+      font-size: 18px;
+      text-align: center;
+    }
+
+    .game-group {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .game-group > div {
+      flex: 1;
+      min-width: 100px;
+    }
+
+    .reset {
+      background: #e74c3c;
+    }
+
+    .reset:hover {
+      background: #c0392b;
+    }
   </style>
 </head>
 <body>
@@ -98,20 +130,66 @@
   </div>
 
   <div id="tab1" class="tab-content active">
-    <!-- カウンター内容（例） -->
+    <!-- ゲーム数 -->
     <div class="counter">
-      <label>５枚役</label>
-      <div class="count" id="cherry-count">0</div>
-      <button onclick="increment('cherry')">＋</button>
-      <button onclick="decrement('cherry')">－</button>
+      <div class="game-group">
+        <div>
+          <label for="start-game">開始ゲーム数</label>
+          <input type="number" id="start-game" min="0" onchange="updatePersonalGame()">
+        </div>
+        <div>
+          <label for="total-game">総ゲーム数</label>
+          <input type="number" id="total-game" min="0" onchange="updatePersonalGame()">
+        </div>
+        <div>
+          <label>個人ゲーム数</label>
+          <div class="count" id="personal-game">0</div>
+        </div>
+      </div>
     </div>
 
+<!-- ５枚役 -->
+<div class="counter" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 20px;">
+  <div style="flex: 1;">
+    <label>５枚役</label>
+    <div class="count" id="cherry-count">0</div>
+    <button onclick="increment('cherry')">＋</button>
+    <button onclick="decrement('cherry')" class="small-button">－</button>
+  </div>
+  <div id="cherry-rate" style="margin-top: 8px; font-size: 14px; color: #555;">
+  	出現率: 1/--  
+  </div>
+
+  <div style="flex: 1;">
+    <label>５枚役 設定別出現率</label>
+    <table border="1" cellpadding="5" cellspacing="0" style="width: 100%; border-collapse: collapse; font-size: 14px;">
+      <thead>
+        <tr>
+          <th>設定</th>
+          <th>出現率</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>設定①</td><td>1/38.15</td></tr>
+        <tr><td>設定②</td><td>1/36.86</td></tr>
+        <tr><td>設定④</td><td>1/30.27</td></tr>
+        <tr><td>設定⑤</td><td>1/24.51</td></tr>
+        <tr><td>設定⑥</td><td>1/22.53</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+    <!-- スイカ -->
     <div class="counter">
       <label>スイカ</label>
       <div class="count" id="suika-count">0</div>
       <button onclick="increment('suika')">＋</button>
-      <button onclick="decrement('suika')">－</button>
+      <button onclick="decrement('suika')" class="small-button">－</button>
     </div>
+
+    <button class="reset" onclick="resetCounts()">リセット</button>
   </div>
 
   <div id="tab2" class="tab-content">
@@ -120,23 +198,56 @@
 
   <script>
     const counts = {
-      cherry: 0,
-      suika: 0
+      cherry: parseInt(localStorage.getItem('cherry') || '0'),
+      suika: parseInt(localStorage.getItem('suika') || '0'),
+      startGame: parseInt(localStorage.getItem('startGame') || '0'),
+      totalGame: parseInt(localStorage.getItem('totalGame') || '0'),
     };
-
-    function increment(key) {
-      counts[key]++;
-      updateDisplay();
-    }
-
-    function decrement(key) {
-      if (counts[key] > 0) counts[key]--;
-      updateDisplay();
-    }
 
     function updateDisplay() {
       document.getElementById('cherry-count').textContent = counts.cherry;
       document.getElementById('suika-count').textContent = counts.suika;
+      document.getElementById('start-game').value = counts.startGame;
+      document.getElementById('total-game').value = counts.totalGame;
+      document.getElementById('personal-game').textContent = Math.max(counts.totalGame - counts.startGame, 0);
+      const personalGame = Math.max(counts.totalGame - counts.startGame, 0);
+	  document.getElementById('personal-game').textContent = personalGame;
+
+	  const cherryRate = personalGame > 0 && counts.cherry > 0 ? (personalGame / counts.cherry).toFixed(2) : '--';
+	  document.getElementById('cherry-rate').textContent = `出現率: 1/${cherryRate}`;
+    }
+
+    function increment(key) {
+      counts[key]++;
+      localStorage.setItem(key, counts[key]);
+      updateDisplay();
+    }
+
+    function decrement(key) {
+      if (counts[key] > 0) {
+        counts[key]--;
+        localStorage.setItem(key, counts[key]);
+        updateDisplay();
+      }
+    }
+
+    function updatePersonalGame() {
+      counts.startGame = parseInt(document.getElementById('start-game').value) || 0;
+      counts.totalGame = parseInt(document.getElementById('total-game').value) || 0;
+      localStorage.setItem('startGame', counts.startGame);
+      localStorage.setItem('totalGame', counts.totalGame);
+      updateDisplay();
+    }
+
+    function resetCounts() {
+      if (confirm('本当にリセットしますか？')) {
+        counts.cherry = 0;
+        counts.suika = 0;
+        counts.startGame = 0;
+        counts.totalGame = 0;
+        localStorage.clear();
+        updateDisplay();
+      }
     }
 
     function switchTab(tabId) {
