@@ -119,6 +119,11 @@
     .reset:hover {
       background: #c0392b;
     }
+	.rate-text {
+  	 margin-top: 8px;
+  	 font-size: 14px;
+  	 color: #333;
+	}
   </style>
 </head>
 <body>
@@ -148,17 +153,16 @@
       </div>
     </div>
 
-<!-- ５枚役 -->
-<div class="counter" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 20px;">
-  <div style="flex: 1;">
-    <label>５枚役</label>
-    <div class="count" id="cherry-count">0</div>
+<div class="counter">
+  <label>５枚役</label>
+  <div class="count" id="cherry-count">0</div>
+  <div class="button-group">
     <button onclick="increment('cherry')">＋</button>
-    <button onclick="decrement('cherry')" class="small-button">－</button>
+    <button onclick="decrement('cherry')">－</button>
   </div>
-  <div id="cherry-rate" style="margin-top: 8px; font-size: 14px; color: #555;">
-  	出現率: 1/--  
-  </div>
+  <div id="cherry-rate" class="rate-text">出現率: 1/--</div>
+</div>
+
 
   <div style="flex: 1;">
     <label>５枚役 設定別出現率</label>
@@ -190,7 +194,6 @@
     </div>
 
     <button class="reset" onclick="resetCounts()">リセット</button>
-  </div>
 
   <div id="tab2" class="tab-content">
     <p>ここは今後追加予定のタブです。</p>
@@ -210,11 +213,13 @@
       document.getElementById('start-game').value = counts.startGame;
       document.getElementById('total-game').value = counts.totalGame;
       document.getElementById('personal-game').textContent = Math.max(counts.totalGame - counts.startGame, 0);
-      const personalGame = Math.max(counts.totalGame - counts.startGame, 0);
-	  document.getElementById('personal-game').textContent = personalGame;
+const personalGame = Math.max(counts.totalGame - counts.startGame, 0);
+document.getElementById('personal-game').textContent = personalGame;
 
-	  const cherryRate = personalGame > 0 && counts.cherry > 0 ? (personalGame / counts.cherry).toFixed(2) : '--';
-	  document.getElementById('cherry-rate').textContent = `出現率: 1/${cherryRate}`;
+const cherryRate = personalGame > 0 && counts.cherry > 0
+  ? (personalGame / counts.cherry).toFixed(2)
+  : '--';
+document.getElementById('cherry-rate').textContent = `出現率: 1/${cherryRate}`;
     }
 
     function increment(key) {
