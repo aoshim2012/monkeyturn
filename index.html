@@ -81,7 +81,6 @@
       border-radius: 5px;
       border: 1px solid #ccc;
     }
-    <style>
   /* 追加: プラスボタンを大きく */
   .btn-plus {
     font-size: 24px;
@@ -114,8 +113,40 @@
   font-size: 16px;
   color: #555;
 }
+.five-role-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+}
 
-</style>
+.five-role-content {
+  flex: 1;
+  min-width: 200px;
+}
+
+.five-role-table {
+  flex: 1;
+  min-width: 180px;
+}
+
+.five-role-table table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fafafa;
+}
+
+.five-role-table th,
+.five-role-table td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: center;
+}
+
+.five-role-table th {
+  background-color: #e0e0e0;
+}
 
   </style>
 </head>
@@ -140,14 +171,32 @@
   </div>
 
 <!-- ５枚役 -->
-<div class="counter">
-  <label>５枚役</label>
-  <div class="count" id="cherry-count">0</div>
-  <div>
-    <button class="btn-plus" onclick="increment('cherry')">＋</button>
-    <button class="btn-minus" onclick="decrement('cherry')">－</button>
+<div class="counter five-role-container">
+  <div class="five-role-content">
+    <label>５枚役</label>
+    <div class="count" id="cherry-count">0</div>
+    <div>
+      <button class="btn-plus" onclick="increment('cherry')">＋</button>
+      <button class="btn-minus" onclick="decrement('cherry')">－</button>
+    </div>
+    <div class="rate-label">
+      出現率：<span id="cherry-rate">-</span>
+    </div>
   </div>
-  <div class="rate-label">出現率: <span id="cherry-rate">-</span></div>
+  <div class="five-role-table">
+    <table>
+      <thead>
+        <tr><th>設定</th><th>出現率</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>①</td><td>1/38.15</td></tr>
+        <tr><td>②</td><td>1/36.86</td></tr>
+        <tr><td>④</td><td>1/30.27</td></tr>
+        <tr><td>⑤</td><td>1/24.51</td></tr>
+        <tr><td>⑥</td><td>1/22.53</td></tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 
 
@@ -217,6 +266,10 @@ function updateDisplay() {
   document.getElementById('suika-count').textContent = counts.suika;
   document.getElementById('start-game').value = counts.startGame;
   document.getElementById('total-game').value = counts.totalGame;
+  document.getElementById('cherry-rate').textContent =
+    counts.cherry > 0 && counts.totalGame - counts.startGame > 0
+    ? '1/' + ((counts.totalGame - counts.startGame) / counts.cherry).toFixed(2)
+    : '-';
 
   const personalGame = Math.max(counts.totalGame - counts.startGame, 0);
   document.getElementById('personal-game').textContent = personalGame;
