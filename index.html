@@ -207,18 +207,25 @@
   <label>【激走チャージ後のセリフ】</label>
   <div style="display: flex; justify-content: space-around; flex-wrap: wrap;">
     <div style="text-align: center;">
-      <div>落ち着く憲二</div>
-      <div class="count" id="kenji-count">0</div>
-      <button class="plus-button" onclick="increment('kenji')">＋</button>
-      <button class="minus-button" onclick="decrement('kenji')">－</button>
-    </div>
-    <div style="text-align: center;">
-      <div>この気配</div>
-      <div class="count" id="kehai-count">0</div>
-      <button class="plus-button" onclick="increment('kehai')">＋</button>
-      <button class="minus-button" onclick="decrement('kehai')">－</button>
-    </div>
+<!-- 落ち着く憲二 -->
+<div style="margin-top: 15px;">
+  <label>落ち着く憲二</label><br>
+  <button onclick="countSerif('kenji', 1)">＋</button>
+  <button onclick="countSerif('kenji', -1)">－</button>
+  <span id="kenji-count">0</span>
+</div>
+
+<!-- この気配 -->
+<div style="margin-top: 10px;">
+  <label>この気配</label><br>
+  <button onclick="countSerif('kehai', 1)">＋</button>
+  <button onclick="countSerif('kehai', -1)">－</button>
+  <span id="kehai-count">0</span>
+</div>
   </div>
+  <!-- 実際の割合表示 -->
+<div id="serif-stats" style="margin-top: 15px; font-size: 14px; color: #333;"></div>
+
   <!-- セリフの割合 表 -->
 <div style="margin-top: 20px;">
   <label>【セリフの割合】</label>
@@ -333,6 +340,43 @@
     document.querySelector(`[onclick="switchTab('${tabId}')"]`).classList.add('active');
     document.getElementById(tabId).classList.add('active');
   }
+// セリフカウント関連の初期値
+const serifCounts = {
+  kenji: parseInt(localStorage.getItem('serifKenji') || '0'),
+  kehai: parseInt(localStorage.getItem('serifKehai') || '0')
+};
+
+// セリフの割合更新表示
+function updateSerifStats() {
+  const total = serifCounts.kenji + serifCounts.kehai;
+  let kenjiRate = '--';
+  let kehaiRate = '--';
+  if (total > 0) {
+    kenjiRate = ((serifCounts.kenji / total) * 100).toFixed(1);
+    kehaiRate = ((serifCounts.kehai / total) * 100).toFixed(1);
+  }
+  document.getElementById('serif-stats').innerHTML = `
+    落ち着く憲二：${serifCounts.kenji}回（${kenjiRate}%）　
+    この気配：${serifCounts.kehai}回（${kehaiRate}%）
+  `;
+}
+
+// ボタンに使う関数（カウントアップ/ダウン）
+function countSerif(type, delta) {
+  if (type === 'kenji') {
+    serifCounts.kenji = Math.max(0, serifCounts.kenji + delta);
+    localStorage.setItem('serifKenji', serifCounts.kenji);
+    document.getElementById('kenji-count').textContent = serifCounts.kenji;
+  } else if (type === 'kehai') {
+    serifCounts.kehai = Math.max(0, serifCounts.kehai + delta);
+    localStorage.setItem('serifKehai', serifCounts.kehai);
+    document.getElementById('kehai-count').textContent = serifCounts.kehai;
+  }
+  updateSerifStats();
+}
+
+// 初期表示
+updateSerifStats();
 
   updateDisplay();
 </script>
