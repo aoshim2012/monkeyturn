@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>モンキーターンV専用カウンター</title>
   <style>
     body {
@@ -11,16 +11,19 @@
       padding: 20px;
       margin: 0;
     }
+
     h1 {
       text-align: center;
       color: #333;
       margin-bottom: 20px;
     }
+
     .tabs {
       display: flex;
       justify-content: center;
       margin-bottom: 20px;
     }
+
     .tab {
       padding: 10px 20px;
       cursor: pointer;
@@ -29,11 +32,13 @@
       border-top-right-radius: 8px;
       margin: 0 5px;
     }
+
     .tab.active {
       background: #fff;
       font-weight: bold;
       border-bottom: 2px solid #fff;
     }
+
     .tab-content {
       display: none;
       background: #fff;
@@ -41,9 +46,11 @@
       border-radius: 0 0 12px 12px;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
+
     .tab-content.active {
       display: block;
     }
+
     .counter {
       background: #fff;
       border-radius: 12px;
@@ -53,21 +60,25 @@
       max-width: 500px;
       text-align: center;
     }
+
     .counter label {
       display: block;
       margin-bottom: 6px;
       font-weight: bold;
     }
+
     .count {
       font-size: 24px;
       color: #007BFF;
       margin-bottom: 5px;
     }
+
     .button-group {
       display: flex;
       justify-content: center;
       gap: 10px;
     }
+
     button {
       font-size: 18px;
       margin: 5px;
@@ -78,65 +89,66 @@
       color: white;
       cursor: pointer;
     }
+
     button:hover {
       background: #0056b3;
     }
+
     .plus-button {
       font-size: 24px;
       padding: 12px 24px;
     }
+
     .minus-button {
       font-size: 14px;
       padding: 6px 12px;
     }
+
     input[type="number"] {
       width: 100px;
       padding: 6px;
       font-size: 18px;
       text-align: center;
     }
+
     .game-group {
       display: flex;
       justify-content: space-between;
       gap: 10px;
       flex-wrap: wrap;
     }
+
     .game-group > div {
       flex: 1;
       min-width: 100px;
     }
+
     .reset {
       background: #e74c3c;
     }
+
     .reset:hover {
       background: #c0392b;
     }
+
     .rate-text {
       margin-top: 8px;
       font-size: 14px;
       color: #333;
     }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
-      margin-top: 10px;
-    }
-    th, td {
-      border: 1px solid #aaa;
-      padding: 6px;
-      text-align: center;
-    }
   </style>
 </head>
 <body>
   <h1>モンキーターンV専用カウンター</h1>
+
   <div class="tabs">
     <div class="tab active" onclick="switchTab('tab1')">小役カウンター</div>
     <div class="tab" onclick="switchTab('tab2')">その他推測要素</div>
     <div class="tab" onclick="switchTab('tab3')">通常時メモ</div>
   </div>
+
   <div id="tab1" class="tab-content active">
+    <!-- ゲーム数 -->
     <div class="counter">
       <div class="game-group">
         <div>
@@ -153,6 +165,8 @@
         </div>
       </div>
     </div>
+
+    <!-- ５枚役 -->
     <div class="counter">
       <label>５枚役</label>
       <div class="count" id="cherry-count">0</div>
@@ -162,142 +176,225 @@
       </div>
       <div id="cherry-rate" class="rate-text">出現率: 1/--</div>
     </div>
+
+    <!-- ５枚役の設定表 -->
     <div class="counter">
       <label>５枚役 設定別出現率</label>
-      <table>
-        <thead><tr><th>設定</th><th>出現率</th></tr></thead>
-        <tbody>
-          <tr><td>①</td><td>1/38.15</td></tr>
-          <tr><td>②</td><td>1/36.86</td></tr>
-          <tr><td>④</td><td>1/30.27</td></tr>
-          <tr><td>⑤</td><td>1/24.51</td></tr>
-          <tr><td>⑥</td><td>1/22.53</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <button class="reset" onclick="resetCounts()">リセット</button>
-  </div>
-  <div id="tab2" class="tab-content">
-    <div class="counter">
-      <label>激走チャージ後のセリフ</label>
-      <div class="button-group">
-        <button class="plus-button" onclick="countSerif('kenji', 1)">＋</button>
-        <button class="minus-button" onclick="countSerif('kenji', -1)">－</button>
-        <span id="kenji-count">0</span><span id="kenji-percent">（0%）</span><br>
-      </div>
-      <div class="button-group">
-        <button class="plus-button" onclick="countSerif('kehai', 1)">＋</button>
-        <button class="minus-button" onclick="countSerif('kehai', -1)">－</button>
-        <span id="kehai-count">0</span><span id="kehai-percent">（0%）</span>
-      </div>
-      <p id="serif-ratio"></p>
-      <table>
+      <table border="1" cellpadding="5" cellspacing="0" style="width: 100%; border-collapse: collapse; font-size: 14px;">
         <thead>
-          <tr><th>設定</th><th>落ち着く憲二</th><th>この気配</th></tr>
+          <tr>
+            <th>設定</th>
+            <th>出現率</th>
+          </tr>
         </thead>
         <tbody>
-          <tr><td>1</td><td>50%</td><td>50%</td></tr>
-          <tr><td>2</td><td>40%</td><td>60%</td></tr>
-          <tr><td>4</td><td>40%</td><td>60%</td></tr>
-          <tr><td>5</td><td>70%</td><td>30%</td></tr>
-          <tr><td>6</td><td>40%</td><td>60%</td></tr>
+          <tr><td>設定①</td><td>1/38.15</td></tr>
+          <tr><td>設定②</td><td>1/36.86</td></tr>
+          <tr><td>設定④</td><td>1/30.27</td></tr>
+          <tr><td>設定⑤</td><td>1/24.51</td></tr>
+          <tr><td>設定⑥</td><td>1/22.53</td></tr>
         </tbody>
       </table>
     </div>
+
+    <button class="reset" onclick="resetCounts()">リセット</button>
   </div>
+
+<!-- すでにあるタブ2内の内容を書き換えてください -->
+<div id="tab2" class="tab-content">
+<!-- 激走チャージ後のセリフ -->
+<div class="counter">
+  <label>【激走チャージ後のセリフ】</label>
+  <div style="display: flex; justify-content: space-around; flex-wrap: wrap;">
+    <div style="text-align: center;">
+<!-- 落ち着く憲二 -->
+<div style="margin-top: 15px;">
+  <label>落ち着く憲二</label><br>
+<button class="plus-button" onclick="countSerif('kenji', 1)">＋</button>
+<button class="minus-button" onclick="countSerif('kenji', -1)">－</button>
+
+  <span id="kenji-count">0</span>
+</div>
+
+<!-- この気配 -->
+<div style="margin-top: 10px;">
+  <label>この気配</label><br>
+<button class="plus-button" onclick="countSerif('kehai', 1)">＋</button>
+<button class="minus-button" onclick="countSerif('kehai', -1)">－</button>
+
+  <span id="kehai-count">0</span>
+</div>
+  </div>
+  <!-- 実際の割合表示 -->
+<div id="serif-stats" style="margin-top: 15px; font-size: 14px; color: #333;"></div>
+
+  <!-- セリフの割合 表 -->
+<div style="margin-top: 20px;">
+  <label>【セリフの割合】</label>
+  <table border="1" cellpadding="5" cellspacing="0" style="width: 100%; border-collapse: collapse; font-size: 14px; text-align: center; margin-top: 10px;">
+    <thead>
+      <tr>
+        <th>設定</th>
+        <th>落ち着く憲二</th>
+        <th>この気配</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>50%</td><td>50%</td></tr>
+      <tr><td>2</td><td>40%</td><td>60%</td></tr>
+      <tr><td>4</td><td>40%</td><td>60%</td></tr>
+      <tr><td>5</td><td>70%</td><td>30%</td></tr>
+      <tr><td>6</td><td>40%</td><td>60%</td></tr>
+    </tbody>
+  </table>
+</div>
+
+</div>
+
+  <!-- レア役直撃 -->
+  <div class="counter">
+    <label>【レア役直撃】</label>
+    <table border="1" cellpadding="5" cellspacing="0" style="width: 100%; border-collapse: collapse; font-size: 14px;">
+      <thead>
+        <tr>
+          <th>設定</th>
+          <th>ボート/弱チェ</th>
+          <th>弱チャ目</th>
+          <th>強チェ/強チャ目</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>１</td><td>-</td><td>-</td><td>0.4%</td></tr>
+        <tr><td>２</td><td>-</td><td>-</td><td>1.2%</td></tr>
+        <tr><td>４</td><td>0.4%</td><td>0.8%</td><td>2.0%</td></tr>
+        <tr><td>５</td><td>0.4%</td><td>2.0%</td><td>3.9%</td></tr>
+        <tr><td>６</td><td>0.4%</td><td>3.1%</td><td>6.3%</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
   <div id="tab3" class="tab-content">
     <p>追加予定　通常時のメモ</p>
   </div>
-  <script>
-    const counts = {
-      cherry: parseInt(localStorage.getItem('cherry') || '0'),
-      startGame: parseInt(localStorage.getItem('startGame') || '0'),
-      totalGame: parseInt(localStorage.getItem('totalGame') || '0'),
-      kenji: parseInt(localStorage.getItem('kenji') || '0'),
-      kehai: parseInt(localStorage.getItem('kehai') || '0'),
-    };
+<script>
+  const counts = {
+    cherry: parseInt(localStorage.getItem('cherry') || '0'),
+    startGame: parseInt(localStorage.getItem('startGame') || '0'),
+    totalGame: parseInt(localStorage.getItem('totalGame') || '0'),
+    kenji: parseInt(localStorage.getItem('kenji') || '0'),
+    kehai: parseInt(localStorage.getItem('kehai') || '0')
+  };
 
-    function updateDisplay() {
-      document.getElementById('cherry-count').textContent = counts.cherry;
-      document.getElementById('start-game').value = counts.startGame;
-      document.getElementById('total-game').value = counts.totalGame;
-      const personalGame = Math.max(counts.totalGame - counts.startGame, 0);
-      document.getElementById('personal-game').textContent = personalGame;
-      const cherryRate = personalGame > 0 && counts.cherry > 0 ? (personalGame / counts.cherry).toFixed(2) : '--';
-      document.getElementById('cherry-rate').textContent = `出現率: 1/${cherryRate}`;
-      document.getElementById('kenji-count').textContent = `${counts.kenji} 回`;
-      document.getElementById('kehai-count').textContent = `${counts.kehai} 回`;
-      updateSerifRatio();
-    }
+  function updateDisplay() {
+    document.getElementById('cherry-count').textContent = counts.cherry;
+    document.getElementById('kenji-count').textContent = counts.kenji;
+    document.getElementById('kehai-count').textContent = counts.kehai;
+    document.getElementById('start-game').value = counts.startGame;
+    document.getElementById('total-game').value = counts.totalGame;
 
-    function increment(key) {
-      counts[key]++;
+    const personalGame = Math.max(counts.totalGame - counts.startGame, 0);
+    document.getElementById('personal-game').textContent = personalGame;
+
+    const cherryRate = personalGame > 0 && counts.cherry > 0
+      ? (personalGame / counts.cherry).toFixed(2)
+      : '--';
+    document.getElementById('cherry-rate').textContent = `出現率: 1/${cherryRate}`;
+  }
+
+  function increment(key) {
+    counts[key]++;
+    localStorage.setItem(key, counts[key]);
+    updateDisplay();
+  }
+
+  function decrement(key) {
+    if (counts[key] > 0) {
+      counts[key]--;
       localStorage.setItem(key, counts[key]);
       updateDisplay();
     }
+  }
 
-    function decrement(key) {
-      if (counts[key] > 0) {
-        counts[key]--;
-        localStorage.setItem(key, counts[key]);
-        updateDisplay();
-      }
-    }
-
-    function updatePersonalGame() {
-      counts.startGame = parseInt(document.getElementById('start-game').value) || 0;
-      counts.totalGame = parseInt(document.getElementById('total-game').value) || 0;
-      localStorage.setItem('startGame', counts.startGame);
-      localStorage.setItem('totalGame', counts.totalGame);
-      updateDisplay();
-    }
+  function updatePersonalGame() {
+    counts.startGame = parseInt(document.getElementById('start-game').value) || 0;
+    counts.totalGame = parseInt(document.getElementById('total-game').value) || 0;
+    localStorage.setItem('startGame', counts.startGame);
+    localStorage.setItem('totalGame', counts.totalGame);
+    updateDisplay();
+  }
 
 function resetCounts() {
   if (confirm('本当にリセットしますか？')) {
-    // 小役カウント
     counts.cherry = 0;
     counts.startGame = 0;
     counts.totalGame = 0;
-
-    // セリフカウントの中身も初期化
     counts.kenji = 0;
     counts.kehai = 0;
 
-    // localStorageのリセット
-    localStorage.setItem('cherry', '0');
-    localStorage.setItem('startGame', '0');
-    localStorage.setItem('totalGame', '0');
-    localStorage.setItem('kenji', '0'); // この行を追加
-    localStorage.setItem('kehai', '0'); // この行を追加
+    serifCounts.kenji = 0;  // 追加
+    serifCounts.kehai = 0;  // 追加
+
+    localStorage.setItem('cherry', 0);
+    localStorage.setItem('startGame', 0);
+    localStorage.setItem('totalGame', 0);
+    localStorage.setItem('kenji', 0);
+    localStorage.setItem('kehai', 0);
+
+    localStorage.setItem('serifKenji', 0);  // 追加
+    localStorage.setItem('serifKehai', 0);  // 追加
 
     updateDisplay();
+    updateSerifStats();  // 追加：セリフの割合表示も更新する
   }
 }
 
+  function switchTab(tabId) {
+    document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+    document.querySelector(`[onclick="switchTab('${tabId}')"]`).classList.add('active');
+    document.getElementById(tabId).classList.add('active');
+  }
+// セリフカウント関連の初期値
+const serifCounts = {
+  kenji: parseInt(localStorage.getItem('serifKenji') || '0'),
+  kehai: parseInt(localStorage.getItem('serifKehai') || '0')
+};
 
+// セリフの割合更新表示
+function updateSerifStats() {
+  const total = serifCounts.kenji + serifCounts.kehai;
+  let kenjiRate = '--';
+  let kehaiRate = '--';
+  if (total > 0) {
+    kenjiRate = ((serifCounts.kenji / total) * 100).toFixed(1);
+    kehaiRate = ((serifCounts.kehai / total) * 100).toFixed(1);
+  }
+  document.getElementById('serif-stats').innerHTML = `
+    落ち着く憲二：${serifCounts.kenji}回（${kenjiRate}%）<br>　
+    この気配：${serifCounts.kehai}回（${kehaiRate}%）
+  `;
+}
 
-    function countSerif(type, delta) {
-      counts[type] += delta;
-      if (counts[type] < 0) counts[type] = 0;
-      localStorage.setItem(type, counts[type]);
-      updateDisplay();
-    }
+// ボタンに使う関数（カウントアップ/ダウン）
+function countSerif(type, delta) {
+  if (type === 'kenji') {
+    serifCounts.kenji = Math.max(0, serifCounts.kenji + delta);
+    localStorage.setItem('serifKenji', serifCounts.kenji);
+    document.getElementById('kenji-count').textContent = serifCounts.kenji;
+  } else if (type === 'kehai') {
+    serifCounts.kehai = Math.max(0, serifCounts.kehai + delta);
+    localStorage.setItem('serifKehai', serifCounts.kehai);
+    document.getElementById('kehai-count').textContent = serifCounts.kehai;
+  }
+  updateSerifStats();
+}
 
-    function updateSerifRatio() {
-      const total = counts.kenji + counts.kehai;
-      const kenjiRatio = total > 0 ? ((counts.kenji / total) * 100).toFixed(1) : '--';
-      const kehaiRatio = total > 0 ? ((counts.kehai / total) * 100).toFixed(1) : '--';
-      document.getElementById('serif-ratio').innerHTML = `落ち着く憲二：${counts.kenji} 回（${kenjiRatio}%）<br>この気配：${counts.kehai} 回（${kehaiRatio}%）`;
-    }
+// 初期表示
+updateSerifStats();
 
-    function switchTab(tabId) {
-      document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-      document.querySelector(`[onclick="switchTab('${tabId}')"]`).classList.add('active');
-      document.getElementById(tabId).classList.add('active');
-    }
+  updateDisplay();
+</script>
 
-    updateDisplay();
-  </script>
 </body>
 </html>
