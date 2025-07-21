@@ -356,7 +356,7 @@ function updateSerifStats() {
     kehaiRate = ((serifCounts.kehai / total) * 100).toFixed(1);
   }
   document.getElementById('serif-stats').innerHTML = `
-    落ち着く憲二：${serifCounts.kenji}回（${kenjiRate}%）　
+    落ち着く憲二：${serifCounts.kenji}回（${kenjiRate}%）<br>　
     この気配：${serifCounts.kehai}回（${kehaiRate}%）
   `;
 }
